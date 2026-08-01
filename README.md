@@ -144,6 +144,7 @@ Build uses plain `tsc` (no bundler). Package manager is `npm`.
 
 - [Quick Usage](#quick-usage) (above) — minimal dispatch + listen.
 - Full copy-paste examples (Shell→MFE broadcast, filtering, multi-instance) are in [docs/USAGE.md](docs/USAGE.md).
+- [Anti-patterns](docs/anti-patterns.md) — what NOT to do and why (MFEs listening to `mfe:*`, non-serializable payloads, domain event names, in-package RxJS bus, etc.).
 - JSDoc on every public export (event constants, payload interfaces, type maps, helpers).
 - Project knowledge base: [`.agent/project-info/`](.agent/project-info/) (`brief.md`, `product.md`, `tech.md`, `architecture.md`, `context.md`).
 
