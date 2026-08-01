@@ -2,6 +2,18 @@
 
 TypeScript contract library for Shell–MFE communication.
 
+## Table of Contents
+
+- [Purpose](#purpose)
+- [Installation](#installation)
+- [Quick Usage](#quick-usage)
+- [Event Catalog](#event-catalog)
+- [Design Principles](#design-principles)
+- [Tech Stack](#tech-stack)
+- [Documentation](#documentation)
+- [Development & Contributing (for AI Agents)](#development--contributing-for-ai-agents)
+- [Related Packages](#related-packages)
+
 ## Purpose
 
 - Named event constants: `MFE_EVENTS`, `SHELL_EVENTS` with stable `mfe:` / `shell:` prefixes.
