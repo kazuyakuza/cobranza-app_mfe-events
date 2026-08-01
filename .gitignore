@@ -35,3 +35,11 @@ dist/
 
 # Kilo agent manager
 .kilo/agent-manager.json
+
+# Dependencies
+node_modules/
+
+# Test coverage
+coverage/
+.nyc_output/
+*.lcov
