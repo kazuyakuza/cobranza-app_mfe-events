@@ -18,10 +18,11 @@ TypeScript contract library for Shell–MFE communication.
 
 - Named event constants: `MFE_EVENTS`, `SHELL_EVENTS` with stable `mfe:` / `shell:` prefixes.
 - Strongly typed payload interfaces and `EventMap` types for type-safe dispatch and listen.
-- Thin type-level + runtime helpers for the browser `CustomEvent` / `window` APIs: `createMfeEvent`, `createShellEvent`, `isMfeEvent`, `isShellEvent`.
+- Thin type-level + runtime helpers over the browser `CustomEvent` / `window` APIs:
+  `createMfeEvent`, `createShellEvent`, `isMfeEvent`, `isShellEvent`.
 - JSDoc + copy-paste usage examples on every public export.
-- Does NOT contain: business logic, Angular components/services/DI, RxJS, an event bus, BFF/API communication, UI chrome (owned by `@cobranza-apps/ui`), or DOM manipulation by MFEs outside their own container.
-- Core rule: MFEs dispatch `mfe:*`; only the Shell listens. The Shell may push info to MFEs via Angular Inputs and/or `shell:*` events.
+- Does NOT provide: an event bus or RxJS subjects, Angular services/components/DI, workspace layout logic, BFF/API communication, UI chrome (owned by `@cobranza-apps/ui`), or DOM manipulation by MFEs outside their own container.
+- Core rule: MFEs dispatch `mfe:*`; only the Shell listens. The Shell pushes info to MFEs via Angular Inputs and/or `shell:*` events.
 
 ## Installation
 
@@ -44,6 +45,7 @@ No Angular peer dependency is required. TypeScript 5.x and a modern browser `Cus
 ```ts
 import {
   MFE_EVENTS,
+  SCHEMA_VERSION,
   createMfeEvent,
   type UpdateHeaderPayload,
 } from '@cobranza-apps/mfe-events';
@@ -53,6 +55,7 @@ const detail: UpdateHeaderPayload = {
   instanceId: myInstanceId,
   status: 'dirty',
   title: 'Clientes — sin guardar',
+  schemaVersion: SCHEMA_VERSION,
 };
 
 window.dispatchEvent(createMfeEvent(MFE_EVENTS.UPDATE_HEADER, detail));
@@ -130,8 +133,6 @@ Full examples (Shell→MFE broadcast + filter, multi-instance handling) live in 
 | Testing | Vitest or Jest (helpers) + `tsc --noEmit` (types) | no browser/E2E |
 | Docs | JSDoc + README + `docs/USAGE.md` | no Storybook |
 
-Build uses plain `tsc` (no bundler). Package manager is `npm`.
-
 ## Development Scripts
 
 | Script | Command | Purpose |
@@ -143,22 +144,14 @@ Build uses plain `tsc` (no bundler). Package manager is `npm`.
 ## Documentation
 
 - [Quick Usage](#quick-usage) (above) — minimal dispatch + listen.
-- Full copy-paste examples (Shell→MFE broadcast, filtering, multi-instance) are in [docs/USAGE.md](docs/USAGE.md).
-- [Anti-patterns](docs/anti-patterns.md) — what NOT to do and why (MFEs listening to `mfe:*`, non-serializable payloads, domain event names, in-package RxJS bus, etc.).
+- Copy-paste examples (broadcast, filtering, multi-instance): [docs/USAGE.md](docs/USAGE.md).
+- [Anti-patterns](docs/anti-patterns.md) — what NOT to do and why.
 - JSDoc on every public export (event constants, payload interfaces, type maps, helpers).
-- Project knowledge base: [`.agent/project-info/`](.agent/project-info/) (`brief.md`, `product.md`, `tech.md`, `architecture.md`, `context.md`).
+- Project knowledge base: [`.agent/project-info/`](.agent/project-info/).
 
 ## Development & Contributing (for AI Agents)
 
-This repo is maintained AI-agent-first via the Kilo Code critical workflow.
-
-- **Before any change**, read and follow [`AGENTS.md`](AGENTS.md) — primary source of agent instructions.
-- Follow the Critical Workflow in [`.kilo/commands/critical-workflow.md`](.kilo/commands/critical-workflow.md) (TODO → branch → plan → implement → review → docs → verify → merge).
-- Project rules live in [`.kilo/rules/`](.kilo/rules/): max 2 args per method, max depth 2, private-by-default, self-documenting code, no commented code, strict typing (no `detail: any`).
-- Source code goes in `src/` per [`.agent/project-structure.md`](.agent/project-structure.md).
-- Plans are stored in [`.kilo/plans/`](.kilo/plans/).
-- To start a task, open a TODO file under `.agent/todos/<YYYYMMDD>/` and run `/critical-workflow`.
-- Branch model: `feat/<name>` (features) / `fix/<name>` (fixes) off `main`; merge back at end of the workflow.
+This repo is maintained AI-agent-first via the Kilo Code critical workflow — read [`AGENTS.md`](AGENTS.md) before any change and follow [`.kilo/commands/critical-workflow.md`](.kilo/commands/critical-workflow.md); rules, project structure, and plans live in [`.kilo/rules/`](.kilo/rules/), [`.agent/project-structure.md`](.agent/project-structure.md), and [`.kilo/plans/`](.kilo/plans/).
 
 ## Related Packages
 

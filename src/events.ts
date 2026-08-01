@@ -1,10 +1,8 @@
 /**
  * @file Event name constants for Shell–MFE communication.
  *
- * Exports `MFE_EVENTS` and `SHELL_EVENTS` — frozen objects mapping logical
- * names to their stable string event identifiers (e.g. `mfe:update-header`,
- * `shell:module-state`). All event name strings are defined here so that
- * consumers never hard-code raw strings. Also exports the `MfeEventName` and
+ * Exports the frozen `MFE_EVENTS` / `SHELL_EVENTS` maps (stable `mfe:*` /
+ * `shell:*` strings consumers never hard-code) and the `MfeEventName` /
  * `ShellEventName` literal unions.
  *
  * @see {@link file://./payloads.ts} for the payload interfaces that accompany each event.

@@ -1,8 +1,6 @@
 # Anti-patterns — @cobranza-apps/mfe-events
 
-These patterns break the Shell–MFE contract. AI agents writing or reviewing code
-must avoid them. Each entry shows the **Don't** (bad), the **Do** (good), and
-**Why** it matters.
+Patterns that break the Shell–MFE contract; AI agents must avoid them. Each entry shows the **Don't** (bad), the **Do** (good), and **Why** it matters.
 
 ## Table of Contents
 
@@ -24,12 +22,9 @@ window.addEventListener('mfe:update-header', (event) => {
 });
 ```
 
-**Do** — only the Shell listens to `mfe:*`; MFEs listen to `shell:*` filtered by
-`instanceId` (see [USAGE §2.2](USAGE.md#22-core-rules-must-follow), snippet G).
+**Do** — only the Shell listens to `mfe:*`; MFEs listen to `shell:*` filtered by `instanceId` (see [USAGE §2.2](USAGE.md#22-core-rules-must-follow), snippet G).
 
-**Why** — `mfe:*` events are MFE→Shell contracts; siblings must not observe each
-other. Observing them couples modules and breaks the broadcast + filter model
-(brief §2.3, §8.4 rules 1–2).
+**Why** — `mfe:*` is an MFE→Shell contract; siblings observing each other couples modules and breaks the broadcast + filter model (brief §2.3, §8.4 rules 1–2).
 
 ### #2 Dispatching `shell:*` from an MFE
 
@@ -39,12 +34,9 @@ other. Observing them couples modules and breaks the broadcast + filter model
 dispatchShellEvent(SHELL_EVENTS.MODULE_STATE, payload);
 ```
 
-**Do** — MFEs dispatch `mfe:*` to request changes; only the Shell dispatches
-`shell:*` (see [USAGE snippet A/D](USAGE.md#26-copy-paste-patterns)).
+**Do** — MFEs dispatch `mfe:*` to request changes; only the Shell dispatches `shell:*` (see [USAGE snippet A/D](USAGE.md#26-copy-paste-patterns)).
 
-**Why** — Shell→MFE events represent authoritative state. An MFE dispatching them
-would corrupt the broadcast + filter model and break multi-instance handling
-(brief §8.4 rule 6).
+**Why** — Shell→MFE events are authoritative state; an MFE dispatching them corrupts the broadcast + filter model and breaks multi-instance (brief §8.4 rule 6).
 
 ### #3 Omitting `schemaVersion` or hard-coding a wrong version
 
@@ -54,13 +46,9 @@ would corrupt the broadcast + filter model and break multi-instance handling
 dispatchMfeEvent(MFE_EVENTS.UPDATE_HEADER, { moduleType, instanceId, title });
 ```
 
-**Do** — always import `SCHEMA_VERSION` and set `schemaVersion: SCHEMA_VERSION`
-on every payload (see [USAGE snippet A](USAGE.md#26-copy-paste-patterns)).
-`createMfeEvent` / `dispatchMfeEvent` throw `MfeEventValidationError` otherwise
-(see [USAGE snippet H](USAGE.md#26-copy-paste-patterns)).
+**Do** — always import `SCHEMA_VERSION` and set `schemaVersion: SCHEMA_VERSION` on every payload (see [USAGE snippet A](USAGE.md#26-copy-paste-patterns)). `createMfeEvent` / `dispatchMfeEvent` throw `MfeEventValidationError` otherwise (see [USAGE snippet H](USAGE.md#26-copy-paste-patterns)).
 
-**Why** — `schemaVersion` is required for payload evolution; mismatched versions
-break consumers on upgrade (brief §6.1).
+**Why** — required for payload evolution; mismatched versions break consumers on upgrade (brief §6.1).
 
 ### #4 Putting functions / class instances / DOM nodes in `detail`
 
@@ -74,11 +62,9 @@ dispatchMfeEvent(MFE_EVENTS.UPDATE_HEADER, {
 });
 ```
 
-**Do** — keep payloads plain JSON-serializable data (primitives, plain objects,
-arrays). Pass behaviour hints as string codes, not callbacks.
+**Do** — keep payloads plain JSON-serializable data (primitives, plain objects, arrays); pass behaviour hints as string codes, not callbacks.
 
-**Why** — `detail` travels inside a `CustomEvent` and must survive serialization
-boundaries, `postMessage`, and devtools inspection (brief §2.3 design principles).
+**Why** — `detail` travels inside a `CustomEvent` and must survive serialization boundaries, `postMessage`, and devtools inspection (brief §2.3 design principles).
 
 ### #5 Using domain event names (`mfe:client:open`) instead of generic catalog + payload data
 
@@ -88,24 +74,17 @@ boundaries, `postMessage`, and devtools inspection (brief §2.3 design principle
 window.dispatchEvent(new CustomEvent('mfe:client:open', { detail }));
 ```
 
-**Do** — use the generic catalog (`MFE_EVENTS.REQUEST_ADD_MODULE` +
-`initialData`) and put domain specifics inside `initialData` / payload fields.
+**Do** — use the generic catalog (`MFE_EVENTS.REQUEST_ADD_MODULE` + `initialData`) and put domain specifics inside `initialData` / payload fields.
 
-**Why** — event names are stable forever; domain proliferation explodes the
-contract and breaks the naming rules (brief §5.1; domain-specific events are out
-of scope).
+**Why** — event names are stable forever; domain proliferation explodes the contract and breaks naming rules (brief §5.1; domain events are out of scope).
 
 ### #6 Building a shared RxJS bus inside this package
 
-**Don't** — add a `Subject`, `BehaviorSubject`, or an `EventBus` class to
-`mfe-events`.
+**Don't** — add a `Subject`, `BehaviorSubject`, or an `EventBus` class to `mfe-events`.
 
-**Do** — keep helpers thin over `CustomEvent` / `window`. RxJS in the Shell/MFE
-apps is fine — just not in this library.
+**Do** — keep helpers thin over `CustomEvent` / `window`. RxJS in the Shell/MFE apps is fine — just not in this library.
 
-**Why** — this package is a typed contract + thin helpers, intentionally
-framework-free. A bus inside it would force a runtime dependency on every
-consumer and collide with consumer-side buses (brief §2.2, §7).
+**Why** — this package is a typed contract + thin helpers, intentionally framework-free; a bus therein forces a runtime dependency on every consumer and collides with consumer buses (brief §2.2, §7).
 
 ## See also
 
