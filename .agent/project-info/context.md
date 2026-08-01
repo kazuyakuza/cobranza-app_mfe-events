@@ -18,7 +18,7 @@
 - Create package.json (name @cobranza-apps/mfe-events, ESM module, TypeScript, peer deps none).
 - Choose build tool among tsup / unbuild / plain tsc + api-extractor.
 - Choose test runner (Vitest or Jest) for helper unit tests.
-- Create tsconfig.json (strict, target ES2022+ aligned with Angular 22 / TS 5.x).
+- Create tsconfig.json (strict, target ES2022+, Angular 22 / TS 5.x ecosystem).
 - Scaffold src/ per brief §4: events.ts, payloads.ts, types.ts, helpers.ts, index.ts, public-api.ts (decide single vs subpath entry).
 - Author docs/USAGE.md (brief §8 examples).
 - Publishable v1.

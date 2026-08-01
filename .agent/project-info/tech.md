@@ -2,7 +2,7 @@
 
 ## 1. Stack
 
-- Language: TypeScript 5.x (align with Angular 22 ecosystem).
+- Language: TypeScript 5.x (Angular 22 ecosystem).
 - Module format: ESM + typings (publishable package).
 - Runtime: modern browser CustomEvent + window APIs; no Node runtime at consumer side.
 - Angular: NOT a dependency (types + thin helpers only).
@@ -40,7 +40,7 @@
 ## 7. Development Setup (current state)
 
 - Repo cloned; brief.md defined.
-- src/ empty (only .gitkeep); docs/ exists; .nvmrc pins Node 22.22.3.
+- src/ empty (only .gitkeep); docs/ exists.
 - No package.json yet -> npm/pnpm install not yet applicable.
 - AI agent workflow via .kilo/ + .agent/ (see AGENTS.md).
 - Follow critical-workflow; plans stored in .kilo/plans/.

@@ -29,7 +29,7 @@
 
 ## 5. Non-Goals (v1)
 
-- No business/domain logic, no domain-specific events.
+- No business logic or domain-specific events.
 - No Angular runtime, components, services, DI.
 - No event bus abstraction, RxJS, or NgModules.
 - No auth/token distribution, no WORKSPACE_CONTEXT broadcast.

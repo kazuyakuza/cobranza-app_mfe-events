@@ -27,7 +27,7 @@
 ## 4. Naming & Evolution
 
 - Prefixes `mfe:` / `shell:`; kebab-case after prefix; no domain segment; no version suffix in name.
-- Versioning: payload.schemaVersion (number, required/throws when omitted on evolving payloads) + package semver. Names never change for a given meaning.
+- Versioning: payload.schemaVersion (number, required/throws when omitted on evolving payloads) + package semver. Names never change once published.
 - Prefer many focused events over overloaded ones.
 
 ## 5. Library Layout (target, per brief §4)
@@ -59,28 +59,23 @@
 - MfeEventMap / ShellEventMap bind event name -> payload type for type-safe dispatch/listen.
 - Full definitions in brief.md §6.
 
-## 9. Helpers (summary)
+## 9. Design Patterns
 
-- Thin pure functions over CustomEvent; no runtime framework.
-- createMfeEvent/createShellEvent, isMfeEvent/isShellEvent, optional dispatchMfeEvent/dispatchShellEvent.
-- No event-bus class, no RxJS, no Angular services.
-
-## 10. Design Patterns
-
+- Thin helper functions over CustomEvent (createMfeEvent/createShellEvent, isMfeEvent/isShellEvent, optional dispatchMfeEvent/dispatchShellEvent); no runtime framework.
 - Contract-first typing (EventMap keyed by constant).
 - Narrowing type guards for safe event handling.
 - Broadcast + filter pattern for Shell->MFE.
 - Identity-carrying payloads (moduleType + instanceId).
 - Stable name + schema version evolution (no rename).
 
-## 11. Critical Paths / Risks
+## 10. Critical Paths / Risks
 
 - ModuleStatus drift vs @cobranza-apps/ui cba-module-header -> keep unions identical.
 - Renaming an event name breaks all consumers -> forbidden; evolve via semver.
 - Adding required payload fields without schemaVersion breaks consumers -> schemaVersion mandatory on evolving payloads.
 - MFEs listening to `mfe:*` of siblings -> forbidden by design/convention.
 
-## 12. Dependencies & Boundaries
+## 11. Dependencies & Boundaries
 
 - Does NOT import @cobranza-apps/entities (payloads stay generic string/Record).
 - Does NOT depend on @cobranza-apps/ui (keeps ModuleStatus union in sync only).
