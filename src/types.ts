@@ -1,9 +1,10 @@
 /**
  * @file Shared types and EventMap definitions for Shell–MFE communication.
  *
- * This module will export common type aliases (e.g. `ModuleStatus`, `ModuleSize`,
- * `ModuleIdentity`) and `EventMap` types that map event name strings to their
- * payload interfaces, enabling type-safe dispatch and listen.
+ * Exports shared type aliases (`ModuleStatus`, `ModuleSize`, `ModuleIdentity`,
+ * `InstanceId`), the `SCHEMA_VERSION` constant, and the `MfeEventMap` /
+ * `ShellEventMap` types that map event name strings to their payload interfaces,
+ * enabling type-safe dispatch and listen.
  *
  * @see {@link file://./events.ts} for event name constants.
  * @see {@link file://./payloads.ts} for payload interfaces.
@@ -59,7 +60,9 @@ export type InstanceId = string;
 
 /**
  * Event map for MFE → Shell events. Maps each `mfe:*` event name literal to its
- * payload interface. Used by typed dispatchers / listeners (TODO 03).
+ * payload interface. Consumed by {@link createMfeEvent}, {@link dispatchMfeEvent},
+ * {@link isMfeEvent}, and {@link assertMfePayload} for type-safe dispatch, listen,
+ * and validation.
  */
 export interface MfeEventMap {
   [MFE_EVENTS.REQUEST_ADD_MODULE]: RequestAddModulePayload;
@@ -73,7 +76,9 @@ export interface MfeEventMap {
 
 /**
  * Event map for Shell → MFE events. Maps each `shell:*` event name literal to
- * its payload interface. Used by typed dispatchers / listeners (TODO 03).
+ * its payload interface. Consumed by {@link createShellEvent},
+ * {@link dispatchShellEvent}, {@link isShellEvent}, and
+ * {@link assertShellPayload} for type-safe dispatch, listen, and validation.
  */
 export interface ShellEventMap {
   [SHELL_EVENTS.MODULE_STATE]: ModuleStatePayload;
