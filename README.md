@@ -1,117 +1,164 @@
-# Base Project for AI Agent Driven Development
+# @cobranza-apps/mfe-events
 
-This project serves as a foundational template for future AI-agent driven development. It is pre-configured with essential rules, workflows, and structures optimized for collaboration between human developers and AI agents (specifically Kilo Code).
+Typed TypeScript contract library for communication between the Company Back-office Shell and its Micro-frontends (MFEs).
 
-**Attention AI Agents:** Before making any changes, you **must** read and adhere to the guidelines outlined in [`AGENTS.md`](AGENTS.md). This file contains critical information about the project's workflow, rules, and architectural standards.
+## Purpose
 
-## Compatibility
+- Provides named event constants (`MFE_EVENTS`, `SHELL_EVENTS`) with stable `mfe:` / `shell:` prefixes.
+- Provides strongly typed payload interfaces (one per event).
+- Provides `EventMap` types for type-safe dispatch and listen.
+- Provides thin type-level + runtime helpers (`createMfeEvent`, `createShellEvent`, `isMfeEvent`, `isShellEvent`) around the browser `CustomEvent` / `window` APIs.
+- Provides JSDoc on every public export; copy-paste USAGE examples.
+- Does NOT contain: business/domain logic, Angular components/services/DI, RxJS, an event-bus class, BFF/api communication, theme/UI chrome (owned by `@cobranza-apps/ui`), or any DOM manipulation by MFEs outside their own container.
+- Core rule: MFEs dispatch `mfe:*`; only the Shell listens. The Shell may push info to MFEs via Angular Inputs and/or `shell:*` events.
 
-This template was implemented and tested with the **Kilo Code VSCode plugin**. It should also work with:
+## Installation
 
-- **Kilo Code CLI** (command-line interface)
-- Any AI agent manager or similar tool that supports custom sub-agent definitions, rule files, and workflow commands via markdown-based configuration
+> The package manager and publish registry are not yet finalized (see `.agent/project-info/tech.md`). Once `package.json` is created and the library is published, install with whichever manager the repo adopts:
 
-The project uses standard Markdown-based configuration (`.kilo/`, `.agent/`) and does not depend on any proprietary format, making it adaptable to other AI-driven development tools.
+```bash
+# npm
+npm install @cobranza-apps/mfe-events
 
-## Prerequisites
-
-- **Kilo Code**: Optimized for the Kilo Code plugin for VSCode, with CLI support. See [compatibility section](#compatibility) for details.
-- **Git**: Ensure your environment is configured for the workflow. See [`how-to-set-up-git.md`](docs/how-to-set-up-git.md).
-
-## About this Project
-
-The primary goal of this repository is to provide a clean, structured starting point for new projects with built-in "AI-Readiness."
-
-### Design Principles
-
-- **Foundation**: A structured baseline for new repositories.
-- **AI-Readiness**: Integrated configurations (like `.kilo`, `.agent`, and `.kilocodeignore`) to enable immediate and effective AI agent participation.
-- **Standardization**: Established coding standards, workflows, and documentation practices.
-- **Project Info**: A persistent context and knowledge management system for agents.
-
-## Project Structure
-
-Understanding the purpose of the configuration directories is key to effective development:
-
-- [`.agent/`](.agent/): Stores project-specific agent context. Includes [`.agent/project-info/`](.agent/project-info/) for persistent project knowledge (`brief.md`, `product.md`, `context.md`, `architecture.md`, `tech.md`), the [`.agent/todos/`](.agent/todos/) directory for task tracking, local rules, and the [`project-structure.md`](.agent/project-structure.md) map.
-- [`.kilo/`](.kilo/): The operational core of the AI integration. Contains custom [`.kilo/agents/`](.kilo/agents/) (Architector, Implementer, Code Reviewer, Docs Specialist, etc.), global [`.kilo/rules/`](.kilo/rules/) (19 rule files), standardized [`.kilo/commands/`](.kilo/commands/) (workflows like the Critical Workflow), [`.kilo/modes/`](.kilo/modes/) for agent mode overrides, and the [`.kilo/plans/`](.kilo/plans/) directory where agents store detailed implementation plans.
-- [`.kilocodeignore`](.kilocodeignore): Controls which files are excluded from codebase indexing, skipping lock files, dependency directories, build outputs, and binary assets.
-
-## The Critical Workflow
-
-The project follows a standardized process for task execution, ensuring systematic progress from analysis to deployment. Each step is handled by a dedicated sub-agent:
-
-```mermaid
-graph TD
-    Start((Start)) --> Origin{1. Task Origin}
-    Origin -- Chat --> CreateTodo[Create TODO file]
-    Origin -- TODO File --> GitSetup["2. Git Feature Branch Setup<br/><small>[Implementer]</small>"]
-    CreateTodo --> GitSetup
-    GitSetup --> VersionUpdate["3. Version Update<br/><small>[Implementer]</small>"]
-    VersionUpdate --> Execution[Task Execution Loop]
-    subgraph ExecutionProcess [4. Task Execution]
-        Execution --> FECheck1{Front-end task?}
-        FECheck1 -- Yes --> FESpec["4.1a Front-end Spec<br/><small>[Frontend Specialist]</small>"]
-        FECheck1 -- No --> ImplPlan
-        FESpec --> ImplPlan["4.1b Implementation Plan<br/><small>[Architector]</small>"]
-        ImplPlan --> Implementation["4.2 Implementation<br/><small>[Implementer]</small>"]
-        Implementation --> CodeReview["4.3 Code Review<br/><small>[Code Reviewer & Simplifier]</small>"]
-        CodeReview -- Fixes Needed --> Fixes["4.3-fix Apply Fixes<br/><small>[Implementer]</small>"]
-        Fixes -- Re-review --> CodeReview
-        CodeReview -- Approved --> Documentation["4.4 Documentation<br/><small>[Docs Specialist]</small>"]
-        Documentation --> FECheck2{Front-end task?}
-        FECheck2 -- Yes --> FEVerify["4.5a Front-end Verify<br/><small>[Frontend Specialist]</small>"]
-        FECheck2 -- No --> OverallCheck
-        FEVerify --> OverallCheck["4.5b Overall Adherence<br/><small>[Architector]</small>"]
-        OverallCheck --> TaskCompletion["4.6 Task Completion<br/><small>[Implementer]</small>"]
-    end
-    TaskCompletion -- More Items --> Execution
-    TaskCompletion -- All Items Done --> TodoCompletion["5. TODO File Completion<br/><small>[Implementer]</small>"]
-    TodoCompletion --> Continuation{6. Continuation: more TODO files?}
-    Continuation -- Yes --> Ask{Ask User to Proceed}
-    Continuation -- No --> End((End))
-    Ask -- Yes --> GitSetup
-    Ask -- No --> End
+# pnpm
+pnpm add @cobranza-apps/mfe-events
 ```
 
-For full details, see [`critical-workflow.md`](.kilo/commands/critical-workflow.md).
+No Angular peer dependency is required. TypeScript 5.x and a modern browser `CustomEvent`/`window` API are the only runtime expectations.
 
-## How to Start a Task
+## Quick Usage
 
-To initiate work with an AI agent, use one of the following copy-paste friendly commands in the chat.
+**MFE dispatch (from the MFE side):**
 
-> **Note on Project Info:** When cloning this template for a new project, the Project Info initialization workflow will trigger automatically. The file `.agent/project-info/brief.md` defines the project's core requirements and scope — AI agents rely on this for context across sessions. To initialize, run `/critical-workflow` and ask to "initialize project info". See [`.kilo/commands/project-info-init.md`](.kilo/commands/project-info-init.md) for details. If the project brief is not defined, agents may produce work that does not align with your goals.
+```ts
+import {
+  MFE_EVENTS,
+  createMfeEvent,
+  type UpdateHeaderPayload,
+} from '@cobranza-apps/mfe-events';
 
-### Option 1: Using a TODO File (Recommended)
+const detail: UpdateHeaderPayload = {
+  moduleType: 'clients',
+  instanceId: myInstanceId,
+  status: 'dirty',
+  title: 'Clientes — sin guardar',
+};
 
-1. Create a new file named `YYYYMMDD-todo-X.md` inside a date-specific subdirectory under `.agent/todos/` (e.g., `.agent/todos/20260602/20260602-todo-1.md`).
-2. Populate it using one of the [recommended TODO file formats](docs/how-to-write-todo-files.md).
-3. Paste the following into the chat:
-
-```text
-full read @AGENTS.md & follow /critical-workflow
-do @/.agent/todos/<YYYYMMDD>/<YYYYMMDD>-todo-<number>.md
+window.dispatchEvent(createMfeEvent(MFE_EVENTS.UPDATE_HEADER, detail));
 ```
 
-### Option 2: Direct Chat Request
+**Shell listen (from the Shell side):**
 
-If you have a quick request, use this template:
+```ts
+import { MFE_EVENTS, isMfeEvent } from '@cobranza-apps/mfe-events';
 
-```text
-full read @AGENTS.md & follow /critical-workflow
-do [Your specific task or request here]
+window.addEventListener(MFE_EVENTS.REQUEST_FULLSCREEN, (event: Event) => {
+  if (!isMfeEvent(event, MFE_EVENTS.REQUEST_FULLSCREEN)) return;
+  const { moduleType, instanceId } = event.detail;
+  // Shell navigates to fullscreen for this instance
+});
 ```
 
-## AI Agent Plans
+Full examples (Shell→MFE broadcast + filter, multi-instance handling) live in [docs/USAGE.md](docs/USAGE.md).
 
-The critical workflow requires the AI to generate detailed implementation plans for each task. The [Architector sub-agent](.kilo/agents/architector.md) handles analysis and planning (step 4.1b), while the [Implementer sub-agent](.kilo/agents/implementer.md) executes the plan (step 4.2). A [Code Reviewer](.kilo/agents/code-reviewer.md) and [Code Simplifier](.kilo/agents/code-simplifier.md) validate quality, a [Docs Specialist](.kilo/agents/docs-specialist.md) maintains documentation, and a [Frontend Specialist](.kilo/agents/frontend-specialist.md) produces front-end specs (4.1a) and verifies front-end implementations (4.5a) for front-end related tasks.
+## Event Catalog
 
-The AI agent will ask for your approval before proceeding with plans. To skip approval prompts, include in the TODO file or chat request:
+### MFE -> Shell
 
-```text
-"Don't request me to approve plans"
-```
+| Constant | Event name | Purpose |
+| --- | --- | --- |
+| `REQUEST_ADD_MODULE` | `mfe:request-add-module` | Ask the Shell to add a new module instance to the workbench |
+| `REQUEST_FULLSCREEN` | `mfe:request-fullscreen` | Ask the Shell to switch this instance to fullscreen |
+| `REQUEST_REMOVE` | `mfe:request-remove` | Ask the Shell to remove this instance from the workbench |
+| `UPDATE_HEADER` | `mfe:update-header` | MFE updates its own header chrome (title, status) |
+| `SHOW_NOTIFICATION` | `mfe:show-notification` | Ask the Shell to show a global toast/notification |
+| `MODULE_READY` | `mfe:module-ready` | MFE finished mounting and is ready |
+| `MODULE_ERROR` | `mfe:module-error` | Unrecoverable load/init error for this instance |
 
----
+### Shell -> MFE
 
-*Note: This workflow is actively maintained and updated to improve stability and introduce new features.*
+| Constant | Event name | Purpose |
+| --- | --- | --- |
+| `MODULE_STATE` | `shell:module-state` | Notify size / collapse / fullscreen / pixel dimensions for this instance |
+| `THEME_CHANGED` | `shell:theme-changed` | Theme token set changed |
+| `VISIBILITY_CHANGED` | `shell:visibility-changed` | Instance became visible or hidden |
+
+### Naming rules
+
+- MFE → Shell: prefix `mfe:`; Shell → MFE: prefix `shell:`.
+- kebab-case after the prefix.
+- No company/domain segment, no version suffix in the name.
+
+### Deferred (not in v1)
+
+- `WORKSPACE_CONTEXT` (sibling instances list)
+- Auth / session / token events
+- Domain-specific events (`mfe:client:*`, etc.)
+- Notification actions (button that fires another event)
+
+## Design Principles
+
+- **Typed first.** Every event has a payload type. No untyped `detail: any`.
+- **Serializable only.** Payloads are plain JSON-serializable data (no functions, DOM nodes, class instances).
+- **Stable names.** Event name strings never change for a given meaning; evolve via optional new fields + package major version.
+- **Many focused events** over a few overloaded ones that keep growing props.
+- **Shell is the only listener of `mfe:*` events.** MFEs do not listen to each other.
+- **Broadcast + filter.** `shell:*` events are dispatched on `window`; each MFE instance filters by `instanceId` (and usually `moduleType`).
+- **Multi-instance aware.** The same `moduleType` can appear multiple times; almost every payload carries `moduleType` + `instanceId`.
+- **AI-agent friendly docs.** JSDoc on every export; copy-paste USAGE examples.
+
+## Tech Stack
+
+| Item | Choice | Notes |
+| --- | --- | --- |
+| Language | TypeScript 5.x | Angular 22 ecosystem |
+| Module format | ESM + typings | publishable package |
+| Angular | Not a dependency | types + thin helpers only |
+| Runtime | Browser `CustomEvent` + `window` | no Node runtime at consumer side |
+| Node | 22.22.3 (`.nvmrc`) | dev toolchain |
+| Build | `tsup` / `unbuild` / `tsc` + `api-extractor` (TBD) | no Angular compiler needed |
+| Testing | Vitest or Jest (helpers) + `tsc --noEmit` (types) | no browser/E2E |
+| Docs | JSDoc + README + `docs/USAGE.md` | no Storybook |
+
+Build tool and package manager are `[FLAGGED]` (decided at initial implementation; see `.agent/project-info/tech.md`).
+
+## Documentation
+
+- [Quick Usage](#quick-usage) (above) — minimal dispatch + listen.
+- [docs/USAGE.md](docs/USAGE.md) — full copy-paste examples from both the MFE and Shell sides, including Shell→MFE broadcast + instance filtering (authored in a follow-up task; aligned with `brief.md` §8).
+- JSDoc on every public export (event constants, payload interfaces, type maps, helpers).
+- Project knowledge base: [`.agent/project-info/`](.agent/project-info/) (`brief.md`, `product.md`, `tech.md`, `architecture.md`, `context.md`).
+
+## Development & Contributing (for AI Agents)
+
+This repo is maintained AI-agent-first via the Kilo Code critical workflow.
+
+- **Before any change**, read and follow [`AGENTS.md`](AGENTS.md) — primary source of agent instructions.
+- Follow the Critical Workflow in [`.kilo/commands/critical-workflow.md`](.kilo/commands/critical-workflow.md) (TODO → branch → plan → implement → review → docs → verify → merge).
+- Project rules live in [`.kilo/rules/`](.kilo/rules/): max 2 args per method, max depth 2, private-by-default, self-documenting code, no commented code, strict typing (no `detail: any`).
+- Source code goes in `src/` per [`.agent/project-structure.md`](.agent/project-structure.md).
+- Plans are stored in [`.kilo/plans/`](.kilo/plans/).
+- To start a task, open a TODO file under `.agent/todos/<YYYYMMDD>/` and run `/critical-workflow`.
+- Branch model: `feat/<name>` (features) / `fix/<name>` (fixes) off `main`; merge back at end of the workflow.
+
+## Related Packages
+
+| Package | Relationship |
+| --- | --- |
+| `@cobranza-apps/ui` | Owns `ModuleHeader`/`ModuleContainer` visuals and the `ModuleStatus` union (keep values in sync). Does NOT dispatch these events. |
+| `@cobranza-apps/entities` | Domain models. Not imported by `mfe-events`; payloads stay generic. |
+| Shell | Sole `mfe:*` listener; owns workbench state, fullscreen URL, notification host. |
+| Individual MFEs | Dispatch `mfe:*`; filter `shell:*` by `instanceId`. |
+
+<!-- DO NOT DELETE NEXT SECTION -->
+
+## Important Note for AI Agents
+
+All agents working on this project MUST adhere to the workflows and rules outlined in [AI Agent Onboarding document](AGENTS.md).
+
+Before starting any task:
+
+1. **Review `AGENTS.md`**: it is the primary source of instructions for agents.
+2. **Follow Workflows**: follow the procedures defined in `.agent/WORKFLOWS.md`, especially the `.kilo/commands/critical-workflow.md`.
+
+<!-- END DO NOT DELETE -->
