@@ -1,4 +1,19 @@
 /**
+ * @file Custom error class for runtime payload validation failures.
+ *
+ * Exports {@link MfeEventValidationError}, {@link MfeValidationErrorEntry},
+ * and {@link MfeValidationErrorContext}. Thrown by `createMfeEvent`,
+ * `createShellEvent`, `dispatchMfeEvent`, `dispatchShellEvent`,
+ * `assertMfePayload`, and `assertShellPayload` when a payload fails
+ * `class-validator` checks or has a missing/mismatched `schemaVersion`.
+ *
+ * AI agents: callers should treat this as a programming error — fix the
+ * payload shape and re-dispatch, not catch-and-swallow.
+ *
+ * @see {@link file://./validate-payload.ts} for the validation pipeline.
+ */
+
+/**
  * A single failed-constraint entry attached to {@link MfeEventValidationError}.
  *
  * @property property - The DTO property name that failed validation (e.g. `'schemaVersion'`, `'message'`).

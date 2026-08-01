@@ -1,3 +1,19 @@
+/**
+ * @file Internal payload validation pipeline.
+ *
+ * Validates `detail` against the DTO registered for `type` in the
+ * `PAYLOAD_DTO_MAP`, enforces `schemaVersion === SCHEMA_VERSION`, and throws
+ * {@link MfeEventValidationError} on any failure. **Not exported publicly** —
+ * consumers call it indirectly via `createMfeEvent`, `dispatchMfeEvent`,
+ * `assertMfePayload` (and their Shell counterparts).
+ *
+ * Requires `reflect-metadata` polyfill (imported once at app entry by the
+ * consumer). See `create-event.ts` module JSDoc for details.
+ *
+ * @see {@link file://./create-event.ts} for the public event creators.
+ * @see {@link file://./dtos/payload-dto-registry.ts} for the DTO map.
+ */
+
 import { plainToInstance } from 'class-transformer';
 import { validateSync, type ValidationError } from 'class-validator';
 import { PAYLOAD_DTO_MAP, type PayloadDtoCtor } from './dtos/payload-dto-registry.js';

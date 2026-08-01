@@ -1,3 +1,18 @@
+/**
+ * @file Validate-and-dispatch helpers for Shell–MFE events.
+ *
+ * Exports {@link dispatchMfeEvent}, {@link dispatchShellEvent}, and the
+ * {@link DispatchOptions} interface. Each function validates the payload via
+ * the corresponding creator (`createMfeEvent` / `createShellEvent`) then
+ * dispatches the resulting `CustomEvent` on `options.target` (defaults to
+ * `globalThis.window`).
+ *
+ * AI agents: prefer these over manual `window.dispatchEvent(create*(…))` —
+ * they handle the SSR / test target fallback in one call.
+ *
+ * @see {@link file://./create-event.ts} for the underlying event creators.
+ */
+
 import type { MfeEventMap, ShellEventMap } from './types.js';
 import { createMfeEvent, createShellEvent } from './create-event.js';
 

@@ -1,5 +1,10 @@
 /**
- * Core event creators with runtime payload validation.
+ * @file Core event creators with runtime payload validation.
+ *
+ * Exports {@link createMfeEvent} and {@link createShellEvent} — validate
+ * `detail` (including `schemaVersion === SCHEMA_VERSION`) then return a
+ * `CustomEvent` with `bubbles: true`. Throw {@link MfeEventValidationError}
+ * on invalid payloads.
  *
  * **Consumer requirement:** this library relies on `class-validator` decorators.
  * Before importing `@cobranza-apps/mfe-events` in the app entry, import the
@@ -8,6 +13,7 @@
  * consumer.
  *
  * @see {@link file://./validate-payload.ts} for the internal validation pipeline.
+ * @see {@link file://./dispatch.ts} for validate-and-dispatch helpers.
  */
 
 import type { MfeEventMap, ShellEventMap } from './types.js';

@@ -1,3 +1,17 @@
+/**
+ * @file Cheap runtime type guards for Shell–MFE events.
+ *
+ * Exports {@link isMfeEvent} and {@link isShellEvent} — `instanceof CustomEvent`
+ * + `type` checks that narrow `Event` to the correct `CustomEvent<Payload>`
+ * without re-validating the payload. Safe for hot listeners.
+ *
+ * For full validation use {@link assertMfePayload} / {@link assertShellPayload}
+ * (in `assert.ts`) or the creators in `create-event.ts`.
+ *
+ * @see {@link file://./create-event.ts} for validated event creators.
+ * @see {@link file://./assert.ts} for payload validators.
+ */
+
 import type { MfeEventMap, ShellEventMap } from './types.js';
 
 /**

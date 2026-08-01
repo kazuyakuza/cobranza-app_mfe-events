@@ -1,3 +1,17 @@
+/**
+ * @file Payload validators for Shell–MFE events (no event construction).
+ *
+ * Exports {@link assertMfePayload} and {@link assertShellPayload} — validate a
+ * payload against the registered DTO without constructing or dispatching a
+ * `CustomEvent`. Throw {@link MfeEventValidationError} on failure.
+ *
+ * Useful for pre-checks before proxying inbound events, or in tests where you
+ * want to assert payload shape without touching the DOM.
+ *
+ * @see {@link file://./create-event.ts} for validated event creators.
+ * @see {@link file://./dispatch.ts} for validate-and-dispatch helpers.
+ */
+
 import type { MfeEventMap, ShellEventMap } from './types.js';
 import { validatePayload } from './validate-payload.js';
 
