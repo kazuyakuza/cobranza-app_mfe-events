@@ -50,9 +50,7 @@ export const SHELL_EVENTS = {
 } as const;
 
 /** Union of all MFE → Shell event name string literals. */
-export type MfeEventName =
-  (typeof MFE_EVENTS)[keyof typeof MFE_EVENTS];
+export type MfeEventName = (typeof MFE_EVENTS)[keyof typeof MFE_EVENTS];
 
 /** Union of all Shell → MFE event name string literals. */
-export type ShellEventName =
-  (typeof SHELL_EVENTS)[keyof typeof SHELL_EVENTS];
+export type ShellEventName = (typeof SHELL_EVENTS)[keyof typeof SHELL_EVENTS];
