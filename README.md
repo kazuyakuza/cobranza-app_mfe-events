@@ -1,20 +1,19 @@
 # @cobranza-apps/mfe-events
 
-Typed TypeScript contract library for communication between the Company Back-office Shell and its Micro-frontends (MFEs).
+TypeScript contract library for Shell–MFE communication.
 
 ## Purpose
 
-- Provides named event constants (`MFE_EVENTS`, `SHELL_EVENTS`) with stable `mfe:` / `shell:` prefixes.
-- Provides strongly typed payload interfaces (one per event).
-- Provides `EventMap` types for type-safe dispatch and listen.
-- Provides thin type-level + runtime helpers (`createMfeEvent`, `createShellEvent`, `isMfeEvent`, `isShellEvent`) around the browser `CustomEvent` / `window` APIs.
-- Provides JSDoc on every public export; copy-paste USAGE examples.
-- Does NOT contain: business/domain logic, Angular components/services/DI, RxJS, an event-bus class, BFF/api communication, theme/UI chrome (owned by `@cobranza-apps/ui`), or any DOM manipulation by MFEs outside their own container.
+- Named event constants: `MFE_EVENTS`, `SHELL_EVENTS` with stable `mfe:` / `shell:` prefixes.
+- Strongly typed payload interfaces and `EventMap` types for type-safe dispatch and listen.
+- Thin type-level + runtime helpers for the browser `CustomEvent` / `window` APIs: `createMfeEvent`, `createShellEvent`, `isMfeEvent`, `isShellEvent`.
+- JSDoc + copy-paste usage examples on every public export.
+- Does NOT contain: business logic, Angular components/services/DI, RxJS, an event bus, BFF/API communication, UI chrome (owned by `@cobranza-apps/ui`), or DOM manipulation by MFEs outside their own container.
 - Core rule: MFEs dispatch `mfe:*`; only the Shell listens. The Shell may push info to MFEs via Angular Inputs and/or `shell:*` events.
 
 ## Installation
 
-> The package manager and publish registry are not yet finalized (see `.agent/project-info/tech.md`). Once `package.json` is created and the library is published, install with whichever manager the repo adopts:
+> Package manager and registry are not yet finalized (see `.agent/project-info/tech.md`). Once published, install with the adopted manager:
 
 ```bash
 # npm
@@ -98,14 +97,13 @@ Full examples (Shell→MFE broadcast + filter, multi-instance handling) live in 
 
 ## Design Principles
 
-- **Typed first.** Every event has a payload type. No untyped `detail: any`.
+- **Typed first.** Every event has a typed payload; no `detail: any`.
 - **Serializable only.** Payloads are plain JSON-serializable data (no functions, DOM nodes, class instances).
 - **Stable names.** Event name strings never change for a given meaning; evolve via optional new fields + package major version.
 - **Many focused events** over a few overloaded ones that keep growing props.
 - **Shell is the only listener of `mfe:*` events.** MFEs do not listen to each other.
 - **Broadcast + filter.** `shell:*` events are dispatched on `window`; each MFE instance filters by `instanceId` (and usually `moduleType`).
 - **Multi-instance aware.** The same `moduleType` can appear multiple times; almost every payload carries `moduleType` + `instanceId`.
-- **AI-agent friendly docs.** JSDoc on every export; copy-paste USAGE examples.
 
 ## Tech Stack
 
@@ -116,7 +114,7 @@ Full examples (Shell→MFE broadcast + filter, multi-instance handling) live in 
 | Angular | Not a dependency | types + thin helpers only |
 | Runtime | Browser `CustomEvent` + `window` | no Node runtime at consumer side |
 | Node | 22.22.3 (`.nvmrc`) | dev toolchain |
-| Build | `tsup` / `unbuild` / `tsc` + `api-extractor` (TBD) | no Angular compiler needed |
+| Build | TBD (`tsup` / `unbuild` / `tsc` + `api-extractor`) | no Angular compiler needed |
 | Testing | Vitest or Jest (helpers) + `tsc --noEmit` (types) | no browser/E2E |
 | Docs | JSDoc + README + `docs/USAGE.md` | no Storybook |
 
@@ -125,7 +123,7 @@ Build tool and package manager are `[FLAGGED]` (decided at initial implementatio
 ## Documentation
 
 - [Quick Usage](#quick-usage) (above) — minimal dispatch + listen.
-- [docs/USAGE.md](docs/USAGE.md) — full copy-paste examples from both the MFE and Shell sides, including Shell→MFE broadcast + instance filtering (authored in a follow-up task; aligned with `brief.md` §8).
+- Full copy-paste examples (Shell→MFE broadcast, filtering, multi-instance) are in [docs/USAGE.md](docs/USAGE.md) (authored in a follow-up task).
 - JSDoc on every public export (event constants, payload interfaces, type maps, helpers).
 - Project knowledge base: [`.agent/project-info/`](.agent/project-info/) (`brief.md`, `product.md`, `tech.md`, `architecture.md`, `context.md`).
 
