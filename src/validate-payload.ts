@@ -11,6 +11,12 @@ import {
  * Validates `detail` against the DTO registered for `type` and throws
  * {@link MfeEventValidationError} on any failure. Internal — use
  * `createMfeEvent` / `dispatchMfeEvent` / `assertMfePayload` to call it.
+ *
+ * **Note:** this module relies on `class-validator` decorators which require
+ * the `reflect-metadata` polyfill. The polyfill is NOT imported here; the
+ * consumer application must `import 'reflect-metadata'` once at app entry
+ * before importing `@cobranza-apps/mfe-events`. See the module-level JSDoc
+ * in `create-event.ts` for details.
  */
 export function validatePayload(type: string, detail: unknown): void {
   assertDetailIsObject(type, detail);

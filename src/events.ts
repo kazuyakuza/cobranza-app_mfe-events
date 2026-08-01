@@ -7,7 +7,7 @@
  * consumers never hard-code raw strings.
  *
  * @see {@link file://./payloads.ts} for the payload interfaces that accompany each event.
- * @see {@link file://./helpers.ts} for `createMfeEvent` / `createShellEvent` helpers.
+ * @see {@link file://./create-event.ts} for `createMfeEvent` / `createShellEvent` helpers.
  */
 
 /**

@@ -24,7 +24,16 @@ function createEvent<T>(type: string, detail: T): CustomEvent<T> {
  * constructing the event. `bubbles: true` so the Shell can listen on
  * `window` or a parent container if needed.
  *
- * @throws {MfeEventValidationError} if `detail` is invalid.
+ * @param type - MFE event name constant from {@link MFE_EVENTS}.
+ * @param detail - Payload matching `MfeEventMap[K]`. Must include `schemaVersion: SCHEMA_VERSION`.
+ * @returns A `CustomEvent` ready to be dispatched via `EventTarget.dispatchEvent`.
+ * @throws {MfeEventValidationError} if `detail` is invalid (missing `schemaVersion`, wrong shape, or unknown event type).
+ *
+ * @example
+ * const event = createMfeEvent(MFE_EVENTS.UPDATE_HEADER, {
+ *   schemaVersion: SCHEMA_VERSION, moduleType: 'clients', instanceId: 'abc', title: 'Clientes',
+ * });
+ * window.dispatchEvent(event);
  */
 export function createMfeEvent<K extends keyof MfeEventMap>(
   type: K,
@@ -35,9 +44,18 @@ export function createMfeEvent<K extends keyof MfeEventMap>(
 
 /**
  * Creates a validated `CustomEvent<ShellEventMap[K]>` for a Shell → MFE event.
- * Same validation/bubbling rules as {@link createMfeEvent}.
+ * Same validation and bubbling rules as {@link createMfeEvent}.
  *
+ * @param type - Shell event name constant from {@link SHELL_EVENTS}.
+ * @param detail - Payload matching `ShellEventMap[K]`. Must include `schemaVersion: SCHEMA_VERSION`.
+ * @returns A `CustomEvent` ready to be dispatched via `EventTarget.dispatchEvent`.
  * @throws {MfeEventValidationError} if `detail` is invalid.
+ *
+ * @example
+ * const event = createShellEvent(SHELL_EVENTS.THEME_CHANGED, {
+ *   schemaVersion: SCHEMA_VERSION, theme: 'gray-intermediate',
+ * });
+ * window.dispatchEvent(event);
  */
 export function createShellEvent<K extends keyof ShellEventMap>(
   type: K,

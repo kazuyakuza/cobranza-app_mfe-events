@@ -2,10 +2,12 @@ import type { MfeEventMap, ShellEventMap } from './types.js';
 import { createMfeEvent, createShellEvent } from './create-event.js';
 
 /**
- * Optional dispatch options. The `target`-as-options-object form (instead of a
- * bare third positional parameter) is intentional: it keeps the public
- * signature within two parameters per the project's `max-arguments-per-method`
- * rule while preserving the TODO's `target?` capability.
+ * Options for {@link dispatchMfeEvent} and {@link dispatchShellEvent}.
+ *
+ * @property target - Explicit `EventTarget` to dispatch on. When omitted the
+ *   function falls back to `globalThis.window`. Pass an explicit target when
+ *   running outside a browser (SSR, tests) or when dispatching on a scoped
+ *   element rather than `window`.
  */
 export interface DispatchOptions {
   readonly target?: EventTarget;
@@ -16,8 +18,16 @@ export interface DispatchOptions {
  * `CustomEvent` on `options.target` (defaults to `window` in browser-like
  * contexts).
  *
+ * @param type - MFE event name constant from {@link MFE_EVENTS}.
+ * @param detail - Payload matching `MfeEventMap[K]`. Must include `schemaVersion: SCHEMA_VERSION`.
+ * @param options - Optional {@link DispatchOptions}. Defaults to dispatching on `window`.
  * @throws {MfeEventValidationError} if `detail` is invalid.
  * @throws {Error} if `target` is omitted and `window` is unavailable (non-browser).
+ *
+ * @example
+ * dispatchMfeEvent(MFE_EVENTS.SHOW_NOTIFICATION, {
+ *   schemaVersion: SCHEMA_VERSION, type: 'success', message: 'Saved',
+ * });
  */
 export function dispatchMfeEvent<K extends keyof MfeEventMap>(
   type: K,
@@ -28,7 +38,19 @@ export function dispatchMfeEvent<K extends keyof MfeEventMap>(
 }
 
 /**
- * Shell-side counterpart of {@link dispatchMfeEvent}.
+ * Shell-side counterpart of {@link dispatchMfeEvent}. Validates `detail`
+ * (via {@link createShellEvent}) and dispatches on `options.target`.
+ *
+ * @param type - Shell event name constant from {@link SHELL_EVENTS}.
+ * @param detail - Payload matching `ShellEventMap[K]`. Must include `schemaVersion: SCHEMA_VERSION`.
+ * @param options - Optional {@link DispatchOptions}. Defaults to dispatching on `window`.
+ * @throws {MfeEventValidationError} if `detail` is invalid.
+ * @throws {Error} if `target` is omitted and `window` is unavailable (non-browser).
+ *
+ * @example
+ * dispatchShellEvent(SHELL_EVENTS.THEME_CHANGED, {
+ *   schemaVersion: SCHEMA_VERSION, theme: 'gray-intermediate',
+ * });
  */
 export function dispatchShellEvent<K extends keyof ShellEventMap>(
   type: K,
