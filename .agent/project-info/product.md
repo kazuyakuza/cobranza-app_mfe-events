@@ -50,6 +50,10 @@
 - Shell: host of workbench, fullscreen URL, notifications, sole `mfe:*` listener.
 - MFEs: dispatch `mfe:*`, filter `shell:*` by instanceId.
 
+## 8. Detailed Specifications
+
+For the full event catalog, payload interfaces, helper signatures, type maps, and copy-paste usage examples, see [brief.md](./brief.md) (§5–§8).
+
 <!-- DO NOT DELETE NEXT SECTION -->
 
 ## Important Note for AI Agents

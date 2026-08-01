@@ -25,9 +25,11 @@
 
 ## Open Questions
 
-- Package manager (align with sibling @cobranza-apps/* TBD).
-- UUID type: string-typed UUID v4 (preferred) vs dedicated UUID brand.
-- Build tool final selection.
+> Items marked `[FLAGGED]` in [architecture.md](./architecture.md) and [tech.md](./tech.md) require resolution at implementation time.
+
+- Package manager (align with sibling @cobranza-apps/* TBD) — `[FLAGGED]` in tech.md §3.
+- UUID type: string-typed UUID v4 (preferred) vs dedicated UUID brand — `[FLAGGED]` in architecture.md §3.
+- Build tool final selection — `[FLAGGED]` in tech.md §2.
 
 ## Constraints in Force
 
