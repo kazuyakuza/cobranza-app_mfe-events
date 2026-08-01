@@ -13,6 +13,11 @@
 import type { MfeEventMap, ShellEventMap } from './types.js';
 import { validatePayload } from './validate-payload.js';
 
+function createEvent<T>(type: string, detail: T): CustomEvent<T> {
+  validatePayload(type, detail);
+  return new CustomEvent<T>(type, { detail, bubbles: true });
+}
+
 /**
  * Creates a validated `CustomEvent<MfeEventMap[K]>` for an MFE → Shell event.
  * Validates `detail` (including `schemaVersion === SCHEMA_VERSION`) before
@@ -25,8 +30,7 @@ export function createMfeEvent<K extends keyof MfeEventMap>(
   type: K,
   detail: MfeEventMap[K],
 ): CustomEvent<MfeEventMap[K]> {
-  validatePayload(type, detail);
-  return new CustomEvent<MfeEventMap[K]>(type, { detail, bubbles: true });
+  return createEvent(type, detail);
 }
 
 /**
@@ -39,6 +43,5 @@ export function createShellEvent<K extends keyof ShellEventMap>(
   type: K,
   detail: ShellEventMap[K],
 ): CustomEvent<ShellEventMap[K]> {
-  validatePayload(type, detail);
-  return new CustomEvent<ShellEventMap[K]>(type, { detail, bubbles: true });
+  return createEvent(type, detail);
 }

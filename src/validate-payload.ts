@@ -22,13 +22,16 @@ export function validatePayload(type: string, detail: unknown): void {
   assertNoErrors(type, errors);
 }
 
+function isNonNullObject(value: unknown): value is object {
+  return value !== null && typeof value === 'object';
+}
+
 function assertDetailIsObject(type: string, detail: unknown): asserts detail is object {
-  if (detail === null || typeof detail !== 'object') {
-    throw new MfeEventValidationError(
-      `Event "${type}" detail must be a non-null object.`,
-      { eventType: type },
-    );
-  }
+  if (isNonNullObject(detail)) return;
+  throw new MfeEventValidationError(
+    `Event "${type}" detail must be a non-null object.`,
+    { eventType: type },
+  );
 }
 
 function assertKnownEventType(type: string, ctor: PayloadDtoCtor | undefined): asserts ctor is PayloadDtoCtor {
@@ -41,7 +44,7 @@ function assertKnownEventType(type: string, ctor: PayloadDtoCtor | undefined): a
 }
 
 function assertSchemaVersion(type: string, detail: object): void {
-  const version = (detail as { schemaVersion?: unknown }).schemaVersion;
+  const version = (detail as { schemaVersion?: unknown; }).schemaVersion;
   if (version === undefined) {
     throw new MfeEventValidationError(
       `Event "${type}" payload is missing the required "schemaVersion".`,

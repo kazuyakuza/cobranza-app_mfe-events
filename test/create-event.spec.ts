@@ -1,42 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { createMfeEvent, createShellEvent } from '../src/create-event.js';
 import { MFE_EVENTS, SHELL_EVENTS } from '../src/events.js';
-import type { ModuleStatePayload, UpdateHeaderPayload } from '../src/payloads.js';
 import { SCHEMA_VERSION } from '../src/types.js';
-import { MfeEventValidationError } from '../src/validation-error.js';
-
-function validUpdateHeader(): UpdateHeaderPayload {
-  return {
-    schemaVersion: SCHEMA_VERSION,
-    moduleType: 'clients',
-    instanceId: 'abc-123',
-    title: 'Clientes',
-    status: 'loaded',
-  };
-}
-
-function validModuleState(): ModuleStatePayload {
-  return {
-    schemaVersion: SCHEMA_VERSION,
-    moduleType: 'clients',
-    instanceId: 'abc-123',
-    size: '100%',
-    width: 800,
-    height: 600,
-    isCollapsed: false,
-    isFullscreen: false,
-  };
-}
-
-function captureError(action: () => void): MfeEventValidationError {
-  try {
-    action();
-    throw new Error('Expected action to throw MfeEventValidationError');
-  } catch (error) {
-    expect(error).toBeInstanceOf(MfeEventValidationError);
-    return error as MfeEventValidationError;
-  }
-}
+import { captureError, expectErrorProperty, validModuleState, validUpdateHeader } from './helpers.js';
 
 describe('createMfeEvent', () => {
   it('creates a bubbling CustomEvent with the validated detail (CE-1)', () => {
@@ -79,7 +45,7 @@ describe('createMfeEvent', () => {
       instanceId: 'abc-123',
     };
     const error = captureError(() => createMfeEvent(MFE_EVENTS.MODULE_ERROR, detail as never));
-    expect(error.errors.map((entry) => entry.property)).toContain('message');
+    expectErrorProperty(error, 'message');
   });
 
   it('throws with property "instanceId" when instanceId is missing (CE-6)', () => {
@@ -88,7 +54,7 @@ describe('createMfeEvent', () => {
       moduleType: 'clients',
     };
     const error = captureError(() => createMfeEvent(MFE_EVENTS.REQUEST_FULLSCREEN, detail as never));
-    expect(error.errors.map((entry) => entry.property)).toContain('instanceId');
+    expectErrorProperty(error, 'instanceId');
   });
 
   it('throws for a null detail (CE-7)', () => {
@@ -114,13 +80,13 @@ describe('createShellEvent', () => {
   it('throws with property "theme" when theme is missing (CE-10)', () => {
     const detail = { schemaVersion: SCHEMA_VERSION };
     const error = captureError(() => createShellEvent(SHELL_EVENTS.THEME_CHANGED, detail as never));
-    expect(error.errors.map((entry) => entry.property)).toContain('theme');
+    expectErrorProperty(error, 'theme');
   });
 
   it('throws with property "size" for an unsupported size (CE-11)', () => {
     const error = captureError(() =>
       createShellEvent(SHELL_EVENTS.MODULE_STATE, { ...validModuleState(), size: '25%' } as never),
     );
-    expect(error.errors.map((entry) => entry.property)).toContain('size');
+    expectErrorProperty(error, 'size');
   });
 });

@@ -1,34 +1,10 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { dispatchMfeEvent, dispatchShellEvent } from '../src/dispatch.js';
 import { MFE_EVENTS, SHELL_EVENTS } from '../src/events.js';
-import type { ModuleStatePayload, UpdateHeaderPayload } from '../src/payloads.js';
-import { SCHEMA_VERSION } from '../src/types.js';
 import { MfeEventValidationError } from '../src/validation-error.js';
+import { validModuleState, validUpdateHeader } from './helpers.js';
 
 const originalWindow = (globalThis as { window?: unknown }).window;
-
-function validUpdateHeader(): UpdateHeaderPayload {
-  return {
-    schemaVersion: SCHEMA_VERSION,
-    moduleType: 'clients',
-    instanceId: 'abc-123',
-    title: 'Clientes',
-    status: 'loaded',
-  };
-}
-
-function validModuleState(): ModuleStatePayload {
-  return {
-    schemaVersion: SCHEMA_VERSION,
-    moduleType: 'clients',
-    instanceId: 'abc-123',
-    size: '100%',
-    width: 800,
-    height: 600,
-    isCollapsed: false,
-    isFullscreen: false,
-  };
-}
 
 afterEach(() => {
   if (originalWindow === undefined) {

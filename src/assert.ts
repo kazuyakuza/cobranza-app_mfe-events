@@ -1,6 +1,10 @@
 import type { MfeEventMap, ShellEventMap } from './types.js';
 import { validatePayload } from './validate-payload.js';
 
+function assertPayload<T>(type: string, detail: T): void {
+  validatePayload(type, detail);
+}
+
 /**
  * Validates an MFE payload without constructing/dispatching a `CustomEvent`.
  * Throws {@link MfeEventValidationError} on failure. Useful for Shell/MFE
@@ -12,7 +16,7 @@ export function assertMfePayload<K extends keyof MfeEventMap>(
   type: K,
   detail: MfeEventMap[K],
 ): void {
-  validatePayload(type, detail);
+  assertPayload(type, detail);
 }
 
 /**
@@ -24,5 +28,5 @@ export function assertShellPayload<K extends keyof ShellEventMap>(
   type: K,
   detail: ShellEventMap[K],
 ): void {
-  validatePayload(type, detail);
+  assertPayload(type, detail);
 }

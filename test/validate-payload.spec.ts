@@ -1,29 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { assertMfePayload, assertShellPayload } from '../src/assert.js';
 import { MFE_EVENTS, SHELL_EVENTS } from '../src/events.js';
-import type { UpdateHeaderPayload } from '../src/payloads.js';
 import { SCHEMA_VERSION } from '../src/types.js';
-import { MfeEventValidationError } from '../src/validation-error.js';
-
-function validUpdateHeader(): UpdateHeaderPayload {
-  return {
-    schemaVersion: SCHEMA_VERSION,
-    moduleType: 'clients',
-    instanceId: 'abc-123',
-    title: 'Clientes',
-    status: 'loaded',
-  };
-}
-
-function captureError(action: () => void): MfeEventValidationError {
-  try {
-    action();
-    throw new Error('Expected action to throw MfeEventValidationError');
-  } catch (error) {
-    expect(error).toBeInstanceOf(MfeEventValidationError);
-    return error as MfeEventValidationError;
-  }
-}
+import { captureError, expectErrorProperty, validUpdateHeader, validVisibilityChanged } from './helpers.js';
 
 describe('validatePayload via assertMfePayload', () => {
   it('throws for an unknown event type (V-1)', () => {
@@ -49,7 +28,7 @@ describe('validatePayload via assertMfePayload', () => {
         initialData: 'str',
       } as never),
     );
-    expect(error.errors.map((entry) => entry.property)).toContain('initialData');
+    expectErrorProperty(error, 'initialData');
   });
 
   it('ignores unknown extra fields (V-4)', () => {
@@ -68,7 +47,7 @@ describe('validatePayload via assertMfePayload', () => {
     const error = captureError(() =>
       assertMfePayload(MFE_EVENTS.UPDATE_HEADER, { ...validUpdateHeader(), status: 'bogus' } as never),
     );
-    expect(error.errors.map((entry) => entry.property)).toContain('status');
+    expectErrorProperty(error, 'status');
   });
 
   it('rejects an invalid notification type (V-7)', () => {
@@ -79,7 +58,7 @@ describe('validatePayload via assertMfePayload', () => {
         message: 'hi',
       } as never),
     );
-    expect(error.errors.map((entry) => entry.property)).toContain('type');
+    expectErrorProperty(error, 'type');
   });
 });
 
@@ -87,13 +66,10 @@ describe('validatePayload via assertShellPayload', () => {
   it('rejects a non-string reason (V-8)', () => {
     const error = captureError(() =>
       assertShellPayload(SHELL_EVENTS.VISIBILITY_CHANGED, {
-        schemaVersion: SCHEMA_VERSION,
-        moduleType: 'clients',
-        instanceId: 'abc-123',
-        visible: true,
+        ...validVisibilityChanged(),
         reason: 7,
       } as never),
     );
-    expect(error.errors.map((entry) => entry.property)).toContain('reason');
+    expectErrorProperty(error, 'reason');
   });
 });
