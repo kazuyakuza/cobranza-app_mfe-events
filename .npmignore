@@ -1,5 +1,7 @@
 # Source files
 src/
+test/
+__test__/
 tests/
 __tests__/
 *.test.ts
