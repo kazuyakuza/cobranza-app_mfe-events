@@ -1,12 +1,13 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { dispatchMfeEvent, dispatchShellEvent } from '../src/dispatch.js';
 import { MFE_EVENTS, SHELL_EVENTS } from '../src/events.js';
+import type { ModuleStatePayload, UpdateHeaderPayload } from '../src/payloads.js';
 import { SCHEMA_VERSION } from '../src/types.js';
 import { MfeEventValidationError } from '../src/validation-error.js';
 
 const originalWindow = (globalThis as { window?: unknown }).window;
 
-function validUpdateHeader() {
+function validUpdateHeader(): UpdateHeaderPayload {
   return {
     schemaVersion: SCHEMA_VERSION,
     moduleType: 'clients',
@@ -16,7 +17,7 @@ function validUpdateHeader() {
   };
 }
 
-function validModuleState() {
+function validModuleState(): ModuleStatePayload {
   return {
     schemaVersion: SCHEMA_VERSION,
     moduleType: 'clients',

@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { assertMfePayload, assertShellPayload } from '../src/assert.js';
 import { MFE_EVENTS, SHELL_EVENTS } from '../src/events.js';
+import type { UpdateHeaderPayload } from '../src/payloads.js';
 import { SCHEMA_VERSION } from '../src/types.js';
 import { MfeEventValidationError } from '../src/validation-error.js';
 
-function validUpdateHeader() {
+function validUpdateHeader(): UpdateHeaderPayload {
   return {
     schemaVersion: SCHEMA_VERSION,
     moduleType: 'clients',

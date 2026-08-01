@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { assertMfePayload, assertShellPayload } from '../src/assert.js';
 import { MFE_EVENTS, SHELL_EVENTS } from '../src/events.js';
+import type { UpdateHeaderPayload } from '../src/payloads.js';
 import { SCHEMA_VERSION } from '../src/types.js';
 import { MfeEventValidationError } from '../src/validation-error.js';
 
-function validUpdateHeader() {
+function validUpdateHeader(): UpdateHeaderPayload {
   return {
     schemaVersion: SCHEMA_VERSION,
     moduleType: 'clients',
@@ -26,7 +27,7 @@ function captureError(action: () => void): MfeEventValidationError {
 
 describe('validatePayload via assertMfePayload', () => {
   it('throws for an unknown event type (V-1)', () => {
-    const error = captureError(() => assertMfePayload('mfe:bogus' as never, validUpdateHeader()));
+    const error = captureError(() => assertMfePayload('mfe:bogus' as never, validUpdateHeader() as never));
     expect(error.message).toMatch(/no payload DTO registered/);
   });
 
