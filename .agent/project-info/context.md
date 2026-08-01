@@ -2,26 +2,27 @@
 
 ## Current Focus
 
-- Project initialization. brief.md fully defined; core project-info files being created (product.md, context.md, architecture.md, tech.md).
-- No source code yet; src/ empty (only .gitkeep).
-- No package.json / tsconfig.json yet.
+- TODO 03 completed and merged to `main`.
+- Source code scaffolded: `src/events.ts`, `src/payloads.ts`, `src/types.ts`, `src/index.ts`, `src/public-api.ts` (from TODO 02).
+- Helpers & runtime validation implemented: `src/create-event.ts`, `src/guards.ts`, `src/dispatch.ts`, `src/assert.ts`, `src/validation-error.ts`.
+- Internal DTOs created under `src/dtos/` for `class-validator` runtime checks.
+- Vitest test suite added (`test/` — 5 spec files, 33 tests passing).
+- Version bumped to `0.3.0`.
 
 ## Recent Changes
 
 - 2026-07-31: brief.md authored with full event catalog, payloads, helpers, design principles.
 - 2026-07-31: feature branch feat/init-project-info-readme created.
 - 2026-07-31: project-info core files (product, context, architecture, tech) created; .initialized marker removed.
-- 2026-07-31: README overwritten from base-project template to project-specific (separate but parallel task).
+- 2026-07-31: README overwritten from base-project template to project-specific.
+- 2026-08-01: TODO 03 implemented on `feat/todo-03-helpers-validation` — added `class-validator`, `class-transformer`, `reflect-metadata`, `vitest`; created DTOs, validation error, helpers, tests.
+- 2026-08-01: TODO 03 merged into `main` and pushed to `origin`. TODO file renamed to `20260801-todo-0-DONE.md`.
 
 ## Immediate Next Steps
 
-- Create package.json (name @cobranza-apps/mfe-events, ESM module, TypeScript, peer deps none).
-- Choose build tool among tsup / unbuild / plain tsc + api-extractor.
-- Choose test runner (Vitest or Jest) for helper unit tests.
-- Create tsconfig.json (strict, target ES2022+, Angular 22 / TS 5.x ecosystem).
-- Scaffold src/ per brief §4: events.ts, payloads.ts, types.ts, helpers.ts, index.ts, public-api.ts (decide single vs subpath entry).
-- Author docs/USAGE.md (brief §8 examples).
-- Publishable v1.
+- Author `docs/USAGE.md` (brief §8 examples) — likely next TODO.
+- Consider secondary package entry points (`@cobranza-apps/mfe-events/events`, `/payloads`, etc.) if consumer demand arises.
+- Publishable v1 when USAGE.md and any remaining integration tests are complete.
 
 ## Open Questions
 
@@ -29,7 +30,8 @@
 
 - Package manager (align with sibling @cobranza-apps/* TBD) — `[FLAGGED]` in tech.md §3.
 - UUID type: string-typed UUID v4 (preferred) vs dedicated UUID brand — `[FLAGGED]` in architecture.md §3.
-- Build tool final selection — `[FLAGGED]` in tech.md §2.
+- Build tool: **plain `tsc`** selected (simplest, no Angular compiler needed) — resolved.
+- Test runner: **Vitest** selected — resolved.
 
 ## Constraints in Force
 
