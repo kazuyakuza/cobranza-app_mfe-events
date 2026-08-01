@@ -126,16 +126,24 @@ Full examples (Shell→MFE broadcast + filter, multi-instance handling) live in 
 | Angular | Not a dependency | types + thin helpers only |
 | Runtime | Browser `CustomEvent` + `window` | no Node runtime at consumer side |
 | Node | 22.22.3 (`.nvmrc`) | dev toolchain |
-| Build | TBD (`tsup` / `unbuild` / `tsc` + `api-extractor`) | no Angular compiler needed |
+| Build | `tsc` | plain TypeScript compiler; no bundler needed for a types + thin-helpers library |
 | Testing | Vitest or Jest (helpers) + `tsc --noEmit` (types) | no browser/E2E |
 | Docs | JSDoc + README + `docs/USAGE.md` | no Storybook |
 
-Build tool and package manager are `[FLAGGED]` (decided at initial implementation; see `.agent/project-info/tech.md`).
+Build uses plain `tsc` (no bundler). Package manager is `npm`.
+
+## Development Scripts
+
+| Script | Command | Purpose |
+| --- | --- | --- |
+| `npm run build` | `tsc` | Compile sources to `dist/` (`.js` + `.d.ts`) |
+| `npm run typecheck` | `tsc --noEmit` | Type-check without emitting output |
+| `npm run clean` | `rimraf dist` | Remove the `dist/` directory |
 
 ## Documentation
 
 - [Quick Usage](#quick-usage) (above) — minimal dispatch + listen.
-- Full copy-paste examples (Shell→MFE broadcast, filtering, multi-instance) are in [docs/USAGE.md](docs/USAGE.md) (authored in a follow-up task).
+- Full copy-paste examples (Shell→MFE broadcast, filtering, multi-instance) are in [docs/USAGE.md](docs/USAGE.md).
 - JSDoc on every public export (event constants, payload interfaces, type maps, helpers).
 - Project knowledge base: [`.agent/project-info/`](.agent/project-info/) (`brief.md`, `product.md`, `tech.md`, `architecture.md`, `context.md`).
 
