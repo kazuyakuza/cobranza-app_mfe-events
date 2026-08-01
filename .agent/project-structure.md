@@ -2,9 +2,10 @@
 
 # Folders in src/
 
-# (no folders yet)
+- src/dtos/ - internal class-validator DTOs mirroring payload interfaces (not exported from public-api)
 
 # Other folders
 
 - .kilo/modes/ - built-in agent mode prompt overrides
 - docs/: Documentation files
+- test/ - Vitest unit tests (not part of the published package)
