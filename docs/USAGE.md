@@ -19,7 +19,7 @@ real exports from the package — no invented APIs.
 
 ### 2.1 Overview
 
-**Provides** — `MFE_EVENTS` / `SHELL_EVENTS` frozen constants, strongly typed `*Payload` interfaces, `MfeEventMap` / `ShellEventMap` mappings, `SCHEMA_VERSION`, runtime-validated `createMfeEvent` / `createShellEvent` / `dispatchMfeEvent` / `dispatchShellEvent`, `isMfeEvent` / `isShellEvent` guards, `assertMfePayload` / `assertShellPayload` validators, and `MfeEventValidationError`.
+**Provides** — `MFE_EVENTS` / `SHELL_EVENTS` frozen constants, strongly typed `*Payload` interfaces, `MfeEventMap` / `ShellEventMap` mappings, `SCHEMA_VERSION`, runtime-validated `createMfeEvent` / `createShellEvent` / `dispatchMfeEvent` / `dispatchShellEvent`, `isMfeEvent` / `isShellEvent` guards, `assertMfePayload` / `assertShellPayload` validators, `MfeEventValidationError`, and the `ModuleDragState` / `ModulePreviewMode` literal-union types for `shell:module-state` drag state.
 
 **Deliberately does NOT provide** — an event bus or RxJS subjects, Angular services/components/DI, workspace layout logic (owned by the Shell), BFF/API communication, UI chrome (owned by `@cobranza-apps/ui`), or DOM manipulation by MFEs outside their own container.
 
@@ -52,7 +52,7 @@ real exports from the package — no invented APIs.
 
 | Constant | Event name | Purpose | Payload |
 | --- | --- | --- | --- |
-| `MODULE_STATE` | `shell:module-state` | Notify size / collapse / fullscreen / pixel dimensions for this instance | `ModuleStatePayload` |
+| `MODULE_STATE` | `shell:module-state` | Notify size / collapse / fullscreen / pixel dimensions and optional drag-and-drop state for this instance | `ModuleStatePayload` |
 | `THEME_CHANGED` | `shell:theme-changed` | Theme token set changed (global) | `ThemeChangedPayload` |
 | `VISIBILITY_CHANGED` | `shell:visibility-changed` | Instance became visible or hidden | `VisibilityChangedPayload` |
 
@@ -108,6 +108,8 @@ ModuleStatePayload (extends ModuleIdentity → moduleType, instanceId)
   height        number              Required CSS pixel height of the module container.
   isCollapsed   boolean             Required.
   isFullscreen  boolean             Required.
+  dragState?    ModuleDragState     Optional drag lifecycle state ('drag-start'|'drag-end'|'dropped'). Omitted when the module is at rest.
+  previewMode?  ModulePreviewMode   Optional drag preview mode requested by the Shell ('collapsed'). Omitted unless a preview placeholder is shown.
 ```
 
 ```
@@ -244,7 +246,8 @@ import {
   type ModuleStatePayload,
 } from '@cobranza-apps/mfe-events';
 
-const detail: ModuleStatePayload = {
+// At rest — dragState / previewMode omitted (backward compatible).
+const restingDetail: ModuleStatePayload = {
   moduleType: 'clients',
   instanceId: 'inst-abc',
   size: '50%',
@@ -255,7 +258,23 @@ const detail: ModuleStatePayload = {
   schemaVersion: SCHEMA_VERSION,
 };
 
-dispatchShellEvent(SHELL_EVENTS.MODULE_STATE, detail);
+dispatchShellEvent(SHELL_EVENTS.MODULE_STATE, restingDetail);
+
+// While dragging — broadcast drag lifecycle + optional collapsed preview.
+const draggingDetail: ModuleStatePayload = {
+  moduleType: 'clients',
+  instanceId: 'inst-abc',
+  size: '50%',
+  width: 320,
+  height: 48,
+  isCollapsed: true,
+  isFullscreen: false,
+  dragState: 'drag-start',
+  previewMode: 'collapsed',
+  schemaVersion: SCHEMA_VERSION,
+};
+
+dispatchShellEvent(SHELL_EVENTS.MODULE_STATE, draggingDetail);
 ```
 
 **G. MFE — filter shell state by instanceId**
