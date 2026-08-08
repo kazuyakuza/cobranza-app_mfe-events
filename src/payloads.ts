@@ -10,8 +10,10 @@
  */
 
 import type {
+  ModuleDragState,
   ModuleIdentity,
   ModuleSize,
+  ModulePreviewMode,
   ModuleStatus,
 } from './types.js';
 
@@ -115,6 +117,10 @@ export interface ModuleStatePayload extends ModuleIdentity {
   height: number;
   isCollapsed: boolean;
   isFullscreen: boolean;
+  /** Current drag lifecycle state, if the module is being dragged. */
+  dragState?: ModuleDragState;
+  /** Visual preview mode requested by the Shell during drag, e.g. a collapsed placeholder. */
+  previewMode?: ModulePreviewMode;
   /** Required; must equal `SCHEMA_VERSION` for this library major. */
   schemaVersion: number;
 }

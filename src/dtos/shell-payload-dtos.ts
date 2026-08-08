@@ -11,6 +11,8 @@ import {
 } from './module-identity-dto.js';
 
 const MODULE_SIZES = ['50%', '100%'] as const;
+const DRAG_STATES = ['drag-start', 'drag-end', 'dropped'] as const;
+const PREVIEW_MODES = ['collapsed'] as const;
 
 /** `shell:module-state` payload validation shape. */
 export class ModuleStateDto extends ModuleIdentityDto {
@@ -28,6 +30,14 @@ export class ModuleStateDto extends ModuleIdentityDto {
 
   @IsBoolean()
   isFullscreen!: boolean;
+
+  @IsOptional()
+  @IsIn(DRAG_STATES)
+  dragState?: 'drag-start' | 'drag-end' | 'dropped';
+
+  @IsOptional()
+  @IsIn(PREVIEW_MODES)
+  previewMode?: 'collapsed';
 }
 
 /** `shell:theme-changed` payload validation shape. */
