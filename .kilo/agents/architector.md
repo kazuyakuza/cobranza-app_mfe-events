@@ -18,11 +18,14 @@ permission:
     "npm test*": allow
     "npm typecheck*": allow
     "npm start*": allow
+    "npm serve*": allow
     "npm run lint*": allow
     "npm run build*": allow
     "npm run test*": allow
     "npm run typecheck*": allow
     "npm run start*": allow
+    "npm run serve*": allow
+    "git -C * log*": allow
     "git log*": allow
     "git shortlog*": allow
     "git diff*": allow
@@ -85,3 +88,7 @@ Also read any files referenced in the task prompt from the caller.
 
 - Plan only. Do NOT write code files, run git commands, or modify non-.md files.
 - Return the plan for approval. **Do NOT proceed to implementation**.
+
+## Extra
+
+Never propose use PowerShell cmds.
