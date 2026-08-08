@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { assertMfePayload, assertShellPayload } from '../src/assert.js';
 import { MFE_EVENTS, SHELL_EVENTS } from '../src/events.js';
 import { SCHEMA_VERSION } from '../src/types.js';
-import { captureError, expectErrorProperty, validUpdateHeader, validVisibilityChanged } from './helpers.js';
+import { captureError, expectErrorProperty, validModuleState, validUpdateHeader, validVisibilityChanged } from './helpers.js';
 
 describe('validatePayload via assertMfePayload', () => {
   it('throws for an unknown event type (V-1)', () => {
@@ -71,5 +71,61 @@ describe('validatePayload via assertShellPayload', () => {
       } as never),
     );
     expectErrorProperty(error, 'reason');
+  });
+});
+
+describe('validatePayload via assertShellPayload (module-state drag/preview)', () => {
+  it('accepts a valid dragState (V-9)', () => {
+    expect(() =>
+      assertShellPayload(SHELL_EVENTS.MODULE_STATE, {
+        ...validModuleState(),
+        dragState: 'drag-start',
+      }),
+    ).not.toThrow();
+  });
+
+  it('accepts a valid previewMode (V-10)', () => {
+    expect(() =>
+      assertShellPayload(SHELL_EVENTS.MODULE_STATE, {
+        ...validModuleState(),
+        previewMode: 'collapsed',
+      }),
+    ).not.toThrow();
+  });
+
+  it('accepts all dragState lifecycle values (V-11)', () => {
+    const lifecycleValues = ['drag-start', 'drag-end', 'dropped'] as const;
+    for (const dragState of lifecycleValues) {
+      expect(() =>
+        assertShellPayload(SHELL_EVENTS.MODULE_STATE, {
+          ...validModuleState(),
+          dragState,
+        }),
+      ).not.toThrow();
+    }
+  });
+
+  it('accepts a payload without optional drag/preview fields (V-12)', () => {
+    expect(() => assertShellPayload(SHELL_EVENTS.MODULE_STATE, validModuleState())).not.toThrow();
+  });
+
+  it('rejects an invalid dragState value (V-13)', () => {
+    const error = captureError(() =>
+      assertShellPayload(SHELL_EVENTS.MODULE_STATE, {
+        ...validModuleState(),
+        dragState: 'dragging',
+      } as never),
+    );
+    expectErrorProperty(error, 'dragState');
+  });
+
+  it('rejects an invalid previewMode value (V-14)', () => {
+    const error = captureError(() =>
+      assertShellPayload(SHELL_EVENTS.MODULE_STATE, {
+        ...validModuleState(),
+        previewMode: 'expanded',
+      } as never),
+    );
+    expectErrorProperty(error, 'previewMode');
   });
 });
