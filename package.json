@@ -1,6 +1,6 @@
 {
   "name": "@cobranza-apps/mfe-events",
-  "version": "0.3.3",
+  "version": "0.4.0",
   "description": "Typed event contracts and helpers for communication between the Cobranza Company Back-office Shell and its micro-frontends.",
   "type": "module",
   "sideEffects": false,
