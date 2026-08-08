@@ -5,6 +5,7 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
+import type { ModuleDragState, ModulePreviewMode } from '../types.js';
 import {
   ModuleIdentityDto,
   SchemaVersionDto,
@@ -33,11 +34,11 @@ export class ModuleStateDto extends ModuleIdentityDto {
 
   @IsOptional()
   @IsIn(DRAG_STATES)
-  dragState?: 'drag-start' | 'drag-end' | 'dropped';
+  dragState?: ModuleDragState;
 
   @IsOptional()
   @IsIn(PREVIEW_MODES)
-  previewMode?: 'collapsed';
+  previewMode?: ModulePreviewMode;
 }
 
 /** `shell:theme-changed` payload validation shape. */
