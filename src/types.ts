@@ -41,10 +41,20 @@ export type ModuleStatus =
 /** Width fraction of a workbench row. */
 export type ModuleSize = '50%' | '100%';
 
-/** Drag lifecycle states the Shell can broadcast for a module instance. */
+/**
+ * Drag lifecycle states the Shell can broadcast for a module instance.
+ * - `'drag-start'`: User began dragging the module.
+ * - `'drag-end'`: User stopped dragging but has not yet dropped.
+ * - `'dropped'`: User completed the drop operation.
+ * Omitted when the module is at rest.
+ */
 export type ModuleDragState = 'drag-start' | 'drag-end' | 'dropped';
 
-/** Preview modes the Shell can request while a module is being dragged. */
+/**
+ * Preview modes the Shell can request while a module is being dragged.
+ * - `'collapsed'`: Show a collapsed placeholder during drag.
+ * Omitted unless a preview placeholder is shown.
+ */
 export type ModulePreviewMode = 'collapsed';
 
 /**

@@ -93,7 +93,7 @@ Full examples (Shell→MFE broadcast + filter, multi-instance handling) live in 
 
 | Constant | Event name | Purpose |
 | --- | --- | --- |
-| `MODULE_STATE` | `shell:module-state` | Notify size / collapse / fullscreen / pixel dimensions for this instance |
+| `MODULE_STATE` | `shell:module-state` | Notify size / collapse / fullscreen / pixel dimensions and optional drag-and-drop state for this instance |
 | `THEME_CHANGED` | `shell:theme-changed` | Theme token set changed |
 | `VISIBILITY_CHANGED` | `shell:visibility-changed` | Instance became visible or hidden |
 

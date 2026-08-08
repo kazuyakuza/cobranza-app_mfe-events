@@ -32,10 +32,12 @@ export class ModuleStateDto extends ModuleIdentityDto {
   @IsBoolean()
   isFullscreen!: boolean;
 
+  /** Current drag lifecycle state. Optional; values: `'drag-start' | 'drag-end' | 'dropped'`. */
   @IsOptional()
   @IsIn(DRAG_STATES)
   dragState?: ModuleDragState;
 
+  /** Visual preview mode during drag. Optional; values: `'collapsed'`. */
   @IsOptional()
   @IsIn(PREVIEW_MODES)
   previewMode?: ModulePreviewMode;

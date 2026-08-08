@@ -289,6 +289,54 @@ window.addEventListener(SHELL_EVENTS.MODULE_STATE, (event: Event) => {
 });
 ```
 
+**G2. MFE — handle drag state changes (AI agent guidance)**
+
+When the Shell broadcasts `shell:module-state` with `dragState` or `previewMode`, the MFE should react accordingly:
+
+```ts
+import { SHELL_EVENTS, isShellEvent } from '@cobranza-apps/mfe-events';
+import type { ModuleDragState, ModulePreviewMode } from '@cobranza-apps/mfe-events';
+
+window.addEventListener(SHELL_EVENTS.MODULE_STATE, (event: Event) => {
+  if (!isShellEvent(event, SHELL_EVENTS.MODULE_STATE)) return;
+  if (event.detail.instanceId !== myInstanceId) return;
+
+  const { dragState, previewMode } = event.detail;
+
+  // Handle drag lifecycle
+  if (dragState === 'drag-start') {
+    // User began dragging this module; pause animations, reduce visual noise
+    console.log('[MFE] drag started');
+  } else if (dragState === 'drag-end') {
+    // User stopped dragging but hasn't dropped yet
+    console.log('[MFE] drag ended (pending drop)');
+  } else if (dragState === 'dropped') {
+    // Drop completed; resume normal operation
+    console.log('[MFE] drop completed');
+  }
+
+  // Handle preview mode
+  if (previewMode === 'collapsed') {
+    // Shell requested a collapsed placeholder during drag
+    // MFE should render a minimal UI (e.g., icon + title only)
+    console.log('[MFE] show collapsed preview');
+  } else {
+    // No preview mode; render full UI
+    console.log('[MFE] show full UI');
+  }
+
+  // Note: dragState and previewMode are optional.
+  // When omitted, the module is at rest (not being dragged).
+});
+```
+
+**Key points for AI agents:**
+- `dragState` and `previewMode` are **optional** fields.
+- When both are omitted, the module is at rest (normal state).
+- `dragState` follows a lifecycle: `'drag-start'` → `'drag-end'` → `'dropped'`.
+- `previewMode: 'collapsed'` is typically sent alongside `dragState: 'drag-start'` or `'drag-end'`.
+- Always check `event.detail.instanceId` to ensure the event is for your instance.
+
 **H. Handling validation errors**
 
 ```ts

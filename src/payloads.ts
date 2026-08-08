@@ -117,9 +117,17 @@ export interface ModuleStatePayload extends ModuleIdentity {
   height: number;
   isCollapsed: boolean;
   isFullscreen: boolean;
-  /** Current drag lifecycle state, if the module is being dragged. */
+  /**
+   * Current drag lifecycle state, if the module is being dragged.
+   * Values: `'drag-start'` | `'drag-end'` | `'dropped'`.
+   * Omitted when the module is at rest.
+   */
   dragState?: ModuleDragState;
-  /** Visual preview mode requested by the Shell during drag, e.g. a collapsed placeholder. */
+  /**
+   * Visual preview mode requested by the Shell during drag.
+   * Values: `'collapsed'` (show a collapsed placeholder).
+   * Omitted unless a preview placeholder is shown.
+   */
   previewMode?: ModulePreviewMode;
   /** Required; must equal `SCHEMA_VERSION` for this library major. */
   schemaVersion: number;
