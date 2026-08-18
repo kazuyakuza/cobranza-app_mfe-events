@@ -6,6 +6,7 @@ TypeScript contract library for Shell–MFE communication.
 
 - [Purpose](#purpose)
 - [Installation](#installation)
+- [Runtime Setup](#runtime-setup)
 - [Quick Usage](#quick-usage)
 - [Event Catalog](#event-catalog)
 - [Design Principles](#design-principles)
@@ -37,6 +38,52 @@ pnpm add @cobranza-apps/mfe-events
 ```
 
 No Angular peer dependency is required. TypeScript 5.x and a modern browser `CustomEvent`/`window` API are the only runtime expectations.
+
+## Runtime Setup
+
+`@cobranza-apps/mfe-events` uses `class-validator` decorators internally. The library **does not bundle `reflect-metadata`** — you must load it in your application entry. The correct loading strategy depends on your environment.
+
+### Angular Projects (with esbuild / Vite / Native Federation)
+
+Add `reflect-metadata` as a global script in `angular.json` (or equivalent builder config):
+
+```json
+{
+  "projects": {
+    "shell": {
+      "architect": {
+        "build": {
+          "options": {
+            "scripts": [
+              "node_modules/reflect-metadata/Reflect.js"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+Do **not** use `import 'reflect-metadata';` in `src/main.ts` — it will fail in ESM environments because `reflect-metadata` is CommonJS-only and ESM module shims cannot resolve the specifier.
+
+### Node.js / Test Environments
+
+Import the polyfill directly in your test setup file:
+
+```ts
+// test-setup.ts
+import 'reflect-metadata';
+```
+
+Or configure your test runner (Vitest, Jest) to load it before specs — see [docs/examples/vitest-setup.md](docs/examples/vitest-setup.md) and [docs/examples/jest-setup.md](docs/examples/jest-setup.md).
+
+### Why Two Different Ways?
+
+`reflect-metadata` is a CommonJS package. ESM module shims (used by Native Federation, Vite dev server) cannot resolve CommonJS specifiers. The Angular application builder's `scripts` array loads it as a traditional global script before bootstrap, which works in all browser environments. In Node/test runners the CommonJS package resolves natively, so a direct `import` is fine.
+
+> Concrete copy-paste examples: [docs/examples/angular-setup.md](docs/examples/angular-setup.md).
+> Common errors and fixes: [docs/troubleshooting.md](docs/troubleshooting.md).
 
 ## Quick Usage
 
@@ -144,8 +191,11 @@ Full examples (Shell→MFE broadcast + filter, multi-instance handling) live in 
 ## Documentation
 
 - [Quick Usage](#quick-usage) (above) — minimal dispatch + listen.
+- [Runtime Setup](#runtime-setup) (above) — loading `reflect-metadata` per environment.
 - Copy-paste examples (broadcast, filtering, multi-instance): [docs/USAGE.md](docs/USAGE.md).
+- Consumer setup examples (Angular / Vitest / Jest): [docs/examples/](docs/examples/).
 - [Anti-patterns](docs/anti-patterns.md) — what NOT to do and why.
+- [Troubleshooting](docs/troubleshooting.md) — `reflect-metadata` errors and fixes.
 - JSDoc on every public export (event constants, payload interfaces, type maps, helpers).
 - Project knowledge base: [`.agent/project-info/`](.agent/project-info/).
 
