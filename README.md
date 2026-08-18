@@ -11,6 +11,7 @@ TypeScript contract library for Shell–MFE communication.
 - [Event Catalog](#event-catalog)
 - [Design Principles](#design-principles)
 - [Tech Stack](#tech-stack)
+- [Development Scripts](#development-scripts)
 - [Documentation](#documentation)
 - [Development & Contributing (for AI Agents)](#development--contributing-for-ai-agents)
 - [Related Packages](#related-packages)
