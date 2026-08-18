@@ -8,7 +8,7 @@
 | --- | --- | --- |
 | `Unable to resolve specifier 'reflect-metadata'` | `import 'reflect-metadata'` used in an ESM entry (`src/main.ts`, Native Federation, Vite dev server). `es-module-shims` cannot resolve the CommonJS specifier. | Remove the `import 'reflect-metadata'` line from `src/main.ts`. Load the polyfill as a global script via the builder `scripts` array: `"scripts": ["node_modules/reflect-metadata/Reflect.js"]` in `angular.json`. See [examples/angular-setup.md](examples/angular-setup.md). |
 | `Reflect is not defined` (or `Reflect.getMetadata is not a function`) | The polyfill was not loaded before the first `@cobranza-apps/mfe-events` import, or the `scripts` entry was added to the wrong target. | Ensure the `scripts` entry is on the active build/test target and runs before app bootstrap. Verify `node_modules/reflect-metadata/Reflect.js` exists after `npm install`. |
-| `class-validator` / `class-transformer` errors in unit tests (`Validation failed`, `isClassValidator` not a decorator`, empty `errors[]`) | `reflect-metadata` not loaded in the test environment. | Add `reflect-metadata` to the test runner's `setupFiles`. See [examples/vitest-setup.md](examples/vitest-setup.md) / [examples/jest-setup.md](examples/jest-setup.md). |
+| `class-validator` / `class-transformer` errors in unit tests (`Validation failed`, `isClassValidator` not a decorator, empty `errors[]`) | `reflect-metadata` not loaded in the test environment. | Add `reflect-metadata` to the test runner's `setupFiles`. See [examples/vitest-setup.md](examples/vitest-setup.md) / [examples/jest-setup.md](examples/jest-setup.md). |
 
 ## Checklist
 
