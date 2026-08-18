@@ -136,13 +136,22 @@ VisibilityChangedPayload (extends ModuleIdentity → moduleType, instanceId)
 - **`isMfeEvent` / `isShellEvent`** — cheap `instanceof CustomEvent && type` narrowing guards; **do not** re-validate in hot listeners (use `assert*` only when you must).
 - **`assertMfePayload` / `assertShellPayload`** — validate without building/dispatching; same exceptions as creators. Useful for pre-checks before proxying inbound events.
 - **`MfeEventValidationError`** — carries `.errors` (per-field messages) and `.eventType`.
-- **`reflect-metadata` requirement** — import it **once at the app entry** before the first import of the package:
+- **`reflect-metadata` requirement (environment-dependent)** — the library uses `class-validator` decorators on internal DTOs and does **not** import the polyfill itself (avoids forcing a global side effect on every consumer). Load it **before the first call** to `createMfeEvent` / `createShellEvent` / `dispatch*` / `assert*`, using the strategy that matches your environment:
 
-```ts
-import 'reflect-metadata';
-```
+  - **Angular (esbuild / Vite / Native Federation):** add `reflect-metadata` to the builder `scripts` array in `angular.json` — do **not** `import 'reflect-metadata'` in `src/main.ts` (CommonJS specifier fails under ESM shims):
 
-The library does not import it itself (avoids forcing a global side effect on every consumer); required because runtime validators use `class-validator` decorators on internal DTOs.
+    ```json
+    "scripts": ["node_modules/reflect-metadata/Reflect.js"]
+    ```
+
+  - **Node.js / Vitest / Jest:** import it directly in a test setup file:
+
+    ```ts
+    // test-setup.ts
+    import 'reflect-metadata';
+    ```
+
+  See [docs/examples/angular-setup.md](examples/angular-setup.md), [docs/examples/vitest-setup.md](examples/vitest-setup.md), [docs/examples/jest-setup.md](examples/jest-setup.md). Common errors: [docs/troubleshooting.md](troubleshooting.md).
 
 ### 2.6 Copy-paste patterns
 
@@ -331,6 +340,7 @@ window.addEventListener(SHELL_EVENTS.MODULE_STATE, (event: Event) => {
 ```
 
 **Key points for AI agents:**
+
 - `dragState` and `previewMode` are **optional** fields.
 - When both are omitted, the module is at rest (normal state).
 - `dragState` follows a lifecycle: `'drag-start'` → `'drag-end'` → `'dropped'`.
@@ -382,6 +392,8 @@ try {
 
 ## See also
 
-- [`README.md`](../README.md) — overview, install, event catalog summary.
+- [`README.md`](../README.md) — overview, install, event catalog summary, Runtime Setup.
+- [Consumer setup examples](examples/) — Angular / Vitest / Jest `reflect-metadata` loading.
+- [Troubleshooting](troubleshooting.md) — `reflect-metadata` errors and fixes.
 - [Anti-patterns](anti-patterns.md) — what NOT to do and why.
 - [`.agent/project-info/brief.md`](../.agent/project-info/brief.md) — authoritative source of truth.
