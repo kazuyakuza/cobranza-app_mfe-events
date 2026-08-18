@@ -2,12 +2,13 @@
 
 ## Current Focus
 
-- TODO 03 completed and merged to `main`.
+- TODO 20260817 completed and merged to `main`.
 - Source code scaffolded: `src/events.ts`, `src/payloads.ts`, `src/types.ts`, `src/index.ts`, `src/public-api.ts` (from TODO 02).
 - Helpers & runtime validation implemented: `src/create-event.ts`, `src/guards.ts`, `src/dispatch.ts`, `src/assert.ts`, `src/validation-error.ts`.
 - Internal DTOs created under `src/dtos/` for `class-validator` runtime checks.
-- Vitest test suite added (`test/` — 5 spec files, 33 tests passing).
-- Version bumped to `0.3.0`.
+- Vitest test suite added (`test/` — 5 spec files, 41 tests passing).
+- Version bumped to `0.5.0`.
+- `reflect-metadata` consumer documentation completed: README Runtime Setup, USAGE.md dual-path setup, example files, troubleshooting, JSDoc updates, peerDependencies declaration.
 
 ## Recent Changes
 
@@ -17,12 +18,13 @@
 - 2026-07-31: README overwritten from base-project template to project-specific.
 - 2026-08-01: TODO 03 implemented on `feat/todo-03-helpers-validation` — added `class-validator`, `class-transformer`, `reflect-metadata`, `vitest`; created DTOs, validation error, helpers, tests.
 - 2026-08-01: TODO 03 merged into `main` and pushed to `origin`. TODO file renamed to `20260801-todo-0-DONE.md`.
+- 2026-08-17: TODO 20260817 implemented on `feat/reflect-metadata-docs` — consumer documentation for `reflect-metadata` loading (README Runtime Setup, USAGE.md dual-path setup, `docs/examples/`, `docs/troubleshooting.md`, JSDoc updates, `peerDependencies` declaration).
+- 2026-08-17: TODO 20260817 merged into `main` and pushed to `origin`. TODO file renamed to `20260817-todo-0-DONE.md`. Version `0.5.0`.
 
 ## Immediate Next Steps
 
-- Author `docs/USAGE.md` (brief §8 examples) — likely next TODO.
 - Consider secondary package entry points (`@cobranza-apps/mfe-events/events`, `/payloads`, etc.) if consumer demand arises.
-- Publishable v1 when USAGE.md and any remaining integration tests are complete.
+- Publishable v1 when any remaining integration tests and final API review are complete.
 
 ## Open Questions
 
