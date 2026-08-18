@@ -93,7 +93,7 @@ Or configure your test runner (Vitest, Jest) to load it before specs — see [do
 import {
   MFE_EVENTS,
   SCHEMA_VERSION,
-  createMfeEvent,
+  dispatchMfeEvent,
   type UpdateHeaderPayload,
 } from '@cobranza-apps/mfe-events';
 
@@ -105,7 +105,7 @@ const detail: UpdateHeaderPayload = {
   schemaVersion: SCHEMA_VERSION,
 };
 
-window.dispatchEvent(createMfeEvent(MFE_EVENTS.UPDATE_HEADER, detail));
+dispatchMfeEvent(MFE_EVENTS.UPDATE_HEADER, detail);
 ```
 
 **Shell listen (from the Shell side):**
